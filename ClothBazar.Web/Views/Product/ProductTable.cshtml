@@ -4,10 +4,13 @@
 
 }
 
-<form method="post">
-    <input type="type" id="searchTxt" name="Search" value="" />
-    <button type="button" id="searchBtn"  class="btn btn-info">Search</button>
-</form>
+<div>
+    <form method="post">
+        <input type="text" id="searchTxt" name="Search" value="" />
+        <button type="button" id="searchBtn"  class="btn btn-info">Search</button>
+    </form>
+        <button type="button" id="newBtn"  class="btn btn-info">New</button>
+</div>
 
 <div>
 <table>
@@ -27,8 +30,8 @@
                 <td>-</td>
                 <td>@product.Price</td>
                 <td>
-                    <button class="btn btn-primary">Edit</button>
-                    <button class="btn btn-danger">Delete</button>
+                    <button class="btn btn-primary editBtn" data-id="@product.ID">Edit</button>
+                    <button class="btn btn-danger deleteBtn" data-id="@product.ID">Delete</button>
                 </td>
             </tr>
         }
@@ -55,4 +58,58 @@
             });
     });
 
+    $("#newBtn").click(function () {
+
+        $.ajax({
+            url: '/Product/Create',
+        })
+            .done(function (response) {
+                $("#actionContainer").html(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $(".editBtn").click(function () {
+        //debugger;
+        $.ajax({
+            url: '/Product/Edit',
+            data: {
+                ID: $(this).attr('data-id')
+            }
+        })
+            .done(function (response) {
+                $("#actionContainer").html(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $(".deleteBtn").click(function () {
+        //debugger;
+        var confirmDelte = confirm("Are tyou sure you want to Delte this Item ?");
+
+        if (confirmDelte) {
+
+            $.ajax({
+                    type:'POST',
+
+                    url: '/Product/Delete',
+                    data: {
+                        ID: $(this).attr('data-id')
+                    }
+                   })
+                    .done(function (response) {
+                        $("#tableContainer").html(response);
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("FAIL");
+
+                    });
+            }
+     });
+
+        
 </script> 
