@@ -9,9 +9,58 @@
     <label>Name</label>
     <input type="text" name="Name" value="" />
     <br />
+
     <label>Description</label>
     <input type="text" name="Description" value="" />
-    <br />
-    <button type="submit">Save</button>
 
+    <br />
+
+    <label>Image</label>
+    <input type="hidden" id="ImageUrl" name="ImageUrl" value="" />
+    <input type="file"  id="imageUpload" name="Image" accept=".png, .jpg, .jpeg" />
+    <div class="thumb">
+        <img id="categoryImage" style="height:200px;width:200px" src="#" alt="Alternate Text" />
+    </div>
+
+    <br />
+
+    <button type="submit">Save</button>
 </form>
+<script>
+    $("#imageUpload").change(function () {
+        debugger;
+        var element = this;
+        var formData = new FormData();
+        var totalFiles = element.files.length;
+
+        for (var i = 0; i < totalFiles; i++) {
+
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Shared/UploadImage',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                debugger;
+                console.log(response);
+                if (response.Success) {
+                    
+                    //$("#categoryImage").attr("src", response.ImageUrl);
+                    $("#ImageUrl").val(response.ImageUrl);
+                }
+
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+
+
+    });
+</script>
